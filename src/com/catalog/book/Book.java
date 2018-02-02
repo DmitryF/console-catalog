@@ -103,12 +103,11 @@ public class Book implements CatalogItem {
 
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append("Id: ").append(String.valueOf(getId())).append("\n")
-				.append("Name: ").append(String.valueOf(getName())).append("\n")
-				.append("Author: ").append(String.valueOf(getAuthor())).append("\n")
-				.append("Genre: ").append(String.valueOf(getGenre())).append("\n")
-				.append("Year: ").append(String.valueOf(getYear()))
-				.toString();
+		return "Book [id=" + getId() +
+				", name=" + getName() +
+				", author=" + getAuthor() +
+				", genre=" + getGenre() +
+				", year=" + getYear() +
+				"]";
 	}
 }
