@@ -24,7 +24,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public abstract class RSSParser<T> {
 
-	final Path filePath;
+	private final Path filePath;
 	
 	public RSSParser(String filePath) throws FileNotFoundException {
 		this.filePath = Paths.get(filePath);
@@ -33,17 +33,15 @@ public abstract class RSSParser<T> {
 		}
 	}
 	
-	public List<T> read() throws RSSParsingException{
+	public List<T> read() throws RSSParseException{
 		List<T> parseObject = null;
 		try (InputStream in = getInputStream();) {           
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();            
             XMLEventReader eventReader = inputFactory.createXMLEventReader(in);            
             parseObject = startRead(eventReader);            
-		} catch (XMLStreamException e) {
-            throw new RSSParsingException(e.getMessage());
-        } catch (IOException e) {
-        	throw new RSSParsingException(e.getMessage());
-		}
+		} catch (XMLStreamException | IOException e) {
+            throw new RSSParseException(e.getMessage());
+        }
 		return parseObject;
 	}
 	
