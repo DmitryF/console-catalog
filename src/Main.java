@@ -17,16 +17,5 @@ public class Main {
 						
 		BookCatalogService manager = new BookCatalogService(new BookCatalog());
 		manager.start();
-		
-		/*try {
-			BookParser bookParser = new BookParser("D:/mathematics.xml");
-			List<Book> books = bookParser.read();
-			for (Book book : books) {
-				System.out.println(book.toString());
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
 }
