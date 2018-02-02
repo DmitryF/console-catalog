@@ -1,12 +1,11 @@
 package com.catalog.book;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
+import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.catalog.service.CatalogService;
+import com.rss.parse.RSSParsingException;
 
 /**
  * @author DzmitryF
@@ -28,7 +27,7 @@ public class BookCatalogService extends CatalogService {
 
 		protected static final String READ_BOOKS_COMMAND = "read";
 		
-		private static final String BOOKS_FILE_PATH = "D:/books.txt";		
+		private static final String BOOKS_FILE_PATH = "D:/mathematics.xml";		
 		
 		/**
 		 * Console tool tips information
@@ -40,44 +39,25 @@ public class BookCatalogService extends CatalogService {
 		
 		@Override
 		public void execute(String... params) {
-			try (Stream<String> stream = Files.lines(Paths.get(BOOKS_FILE_PATH))) {
+			try {
+				
+				BookParser bookParser = new BookParser(BOOKS_FILE_PATH);				
+				List<Book> books = bookParser.read();
 				
 				BookCatalog bookCatalog = (BookCatalog) getCatalog();
-				bookCatalog.getItems().clear();
-				
-				stream.map(bookAttributes -> readBook(bookAttributes))
-						.forEach(book -> bookCatalog.add(book));				
-				
+				if (books != null && books.size() > 0) {
+					bookCatalog.getItems().clear();
+					Stream<Book> bookStream = books.stream();
+					bookStream.forEach(book -> bookCatalog.add(book));
+				}
 				println(READ_COMPLETE_INFO);
-				println(COUN_BOOKS_INFO + bookCatalog.getItems().size());
-				
+				println(COUN_BOOKS_INFO + bookCatalog.getItems().size());			
 				executeCommand(StartCommand.START_COMMAND);
-			} catch (NoSuchFileException e) {
+			} catch (FileNotFoundException e) {
 				println(FILE_NOT_FOUND_INFO + e.getMessage());
-			} catch (IOException e) {
+			} catch (RSSParsingException e) {
 				println(READ_FILE_ERROR_INFO + e.getStackTrace());
 			}
-		}
-		
-		private Book readBook(String line) {
-			
-			if (line != null && line.length() > 0) {
-				try {
-					Object[] attributes = line.split(",");
-					Book book = new Book();
-					book.setId(Integer.valueOf(attributes[0].toString()));
-					book.setName(attributes[1].toString());
-					book.setAuthor(attributes[2].toString());
-					book.setGenre(attributes[3].toString());
-					book.setDescription(attributes[4].toString());
-					book.setYear(Integer.valueOf(attributes[5].toString()));
-					return book;
-				} catch (Exception e) {
-					return null;
-				}
-			}
-			return null;
-		}
-		
+		}				
 	}
 }
