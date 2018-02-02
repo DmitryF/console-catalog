@@ -4,6 +4,11 @@
 # Log file
 *.log
 
+*.docx
+*.mdj
+*.project
+*.classpath
+
 # BlueJ files
 *.ctxt
 
